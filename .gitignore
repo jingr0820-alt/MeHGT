@@ -1,0 +1,32 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+.mypy_cache/
+.idea/
+.vscode/
+
+# Raw or licensed datasets are not committed by default.
+data/*.tsv
+data/*.csv
+data/*.txt
+data/*.gz
+data/*.pt
+data/*.pkl
+!data/example/
+!data/example/**
+
+# Generated training artifacts.
+out/
+models/
+checkpoints/
+logs/
+*.pth
+*.pt
+
+# Local manuscript and office files.
+*.docx
+*.pptx
+~$*
