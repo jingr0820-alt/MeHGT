@@ -2,9 +2,9 @@
 
 MeHGT is a mechanism-aware heterogeneous graph learning framework for
 herb-disease candidate prioritization. This repository is the minimal public
-code package accompanying the manuscript. It contains the model pipeline and
-schema-only example inputs; it does not contain manuscript results,
-checkpoints, private working notes, or the complete experimental archive.
+implementation of MeHGT, including data preprocessing, graph construction,
+model training, candidate ranking, and mechanism analysis. Input schemas and
+execution instructions are provided below.
 
 ## Repository layout
 
@@ -15,11 +15,28 @@ data/example/          Small schema examples with synthetic or redacted values
 requirements.txt       Python dependencies
 ```
 
-The full source datasets are intentionally not bundled. Obtain each dataset
-from its original provider, confirm its redistribution terms, and place the
-files under `data/` with the filenames expected by the scripts. The files in
-`data/example/` document the required columns only and are not sufficient for
-reproducing the manuscript numbers.
+## Input data
+
+The source tables are available from the
+[TCM-MKG dataset on Zenodo](https://doi.org/10.5281/zenodo.13763953).
+The manuscript used the dataset obtained on April 27, 2026. Follow the
+provider's terms when obtaining or redistributing these data.
+
+Place the following tab-separated files directly under `data/`:
+
+| File | Relation or attributes |
+| --- | --- |
+| `D4_CPM_CHP.tsv` | Patent medicine to herb |
+| `D5_CPM_ICD11.tsv` | Patent medicine to ICD-11 indication |
+| `D7_CHP_Medicinal_properties.tsv` | Herb attributes |
+| `D9_CHP_InChIKey.tsv` | Herb to compound |
+| `D13_InChIKey_EntrezID.tsv` | Compound to target |
+| `D20_ICD11_MeSH.tsv` | ICD-11 to MeSH mapping |
+| `D23_MeSH_targets.tsv` | Disease to target |
+
+The files in `data/example/` contain fictional identifiers and document input
+columns only. They are not a runnable study dataset. `D18_ICD11.tsv` is included
+as an additional terminology schema used in the wider study.
 
 ## Installation
 
@@ -28,7 +45,7 @@ installed with versions compatible with the local CPU/CUDA platform.
 
 ```bash
 python -m venv .venv
-# Windows: .venv\\Scripts\\activate
+# Windows: .venv\Scripts\activate
 # Linux/macOS: source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
@@ -57,26 +74,34 @@ python code/step4_train_main_model.py \
   --use-mechanism \
   --seed 42 \
   --tag hgt_mech_main_s42
-python code/step5_predict_main_model.py --help
-python code/step6_analyze_mechanism_main.py --help
+python code/step5_predict_main_model.py --use-mechanism --tag hgt_mech_main_s42 --mech-alpha 0.35
+python code/step6_analyze_mechanism_main.py --tag hgt_mech_main_s42
 ```
 
-The exact split protocol, seeds, hyperparameters, and evaluation choices used
-for the manuscript are part of the study record and are not represented by a
-single public result file here. Running the commands above on independently
-obtained inputs produces local outputs; it is not a claim that the published
-metrics can be reproduced from this minimal package alone.
+The commands above run the core pipeline on the reference disease split
+(data seed 42), using external indication-derived labels and the 100-800
+negative-candidate rank window. The `external_cpm_strict` dataset mode refers
+to label construction; it does not implement the strict post-reveal knowledge
+visibility protocol.
+
+The manuscript's primary evaluation uses 20 fixed disease splits with three
+model initialization seeds per split. Its strict post-reveal and
+external-feature-only experiments require additional graph and training
+protocols. Those experiment drivers and the full split manifest are not
+included in this core package. Manuscript experiments should be interpreted
+using their corresponding protocols and supplementary materials.
 
 ## Data and results policy
 
-No manuscript tables, figures, per-seed summaries, trained checkpoints, case
-study outputs, or unpublished intermediate results are distributed in this
-repository. Results may be deposited separately if required by the journal and
-after checking data-use, privacy, and third-party licensing terms.
+Training metrics, checkpoints, candidate rankings, and mechanism outputs are
+generated locally under `out/`. Manuscript figures, study result archives, and
+the GSE26712 case-study workflow are maintained separately from this core
+implementation.
 
 ## Citation and license
 
-Citation metadata, author-approved repository URL, and a code license will be
-added after the manuscript and public archive are frozen. Until then, this
-repository is an author-controlled code release and does not grant a reuse
-license. Third-party data remain governed by their original terms.
+Repository: https://github.com/jingr0820-alt/MeHGT
+
+Citation metadata will be updated when the manuscript is finalized.
+A code license is pending author approval. Third-party datasets remain
+governed by their original terms.
