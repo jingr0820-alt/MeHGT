@@ -1,0 +1,3 @@
+ICD11_code	BlockId	English_term	Chinese_term	ClassKind	DepthInKind	IsResidual	ChapterNo	BrowserLink	isLeaf	Primary tabulation	Grouping1	Grouping2	Grouping3	Grouping4	Grouping5	Version
+EXAMPLE_ICD_1	EXAMPLE_BLOCK_1	Example disease one		category	1	False	1		True							SYNTHETIC
+EXAMPLE_ICD_2	EXAMPLE_BLOCK_2	Example disease two		category	1	False	1		True							SYNTHETIC
